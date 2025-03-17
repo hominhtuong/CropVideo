@@ -12,13 +12,12 @@ Designed for iOS, this library provides a highly customizable UI, enabling devel
 ✅ Crop Video – Resize and crop videos to the desired frame.
 ✅ Trim Video – Cut and trim videos by selecting a specific time range.  
 
-## Crop Video Demo 🎬
+## Video Editing Demo 🎬
 
-<img src="Resources/crop.gif" width="750">
-
-## Trim Video Demo 🎬
-
-<img src="Resources/trim.gif" width="750">
+<p align="center">
+  <img src="Resources/trim.gif" width="39%">
+  <img src="Resources/crop.gif" width="39%">
+</p>
 
 
 ## Installation with CocoaPods
