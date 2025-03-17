@@ -155,6 +155,15 @@ public class CropVideoViewController: UIViewController {
             self.view.layoutIfNeeded()
         }
     }
+    
+    func dismissView() {
+        switch configs.transition {
+        case .push(let animated):
+            navigationController?.popViewController(animated: animated)
+        case .present(let animated):
+            dismiss(animated: animated)
+        }
+    }
 }
 
 //MARK: Lifecycle
@@ -282,7 +291,7 @@ extension CropVideoViewController {
             $0.setImage(configs.images.backButton, for: .normal)
             $0.handle {
                 self.delegate?.didTapBack()
-                self.navigationController?.popViewController(animated: true)
+                self.dismissView()
             }
         }
 
@@ -331,7 +340,7 @@ extension CropVideoViewController {
                     self.doneTrimming()
                 } else {
                     self.delegate?.didTapDone(editedUrl: self.url)
-                    self.navigationController?.popViewController(animated: true)
+                    self.dismissView()
                 }
 
             }

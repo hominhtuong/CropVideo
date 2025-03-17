@@ -22,19 +22,22 @@ public struct CropVideoConfigs {
     public var images: Images
     public var fonts: Fonts
     public var values: Values
+    public var transition: TransitionType
 
     public init(
         strings: Strings = Strings(),
         colors: Colors = Colors(),
         images: Images = Images(),
         fonts: Fonts = Fonts(),
-        values: Values = Values()
+        values: Values = Values(),
+        transition: TransitionType = TransitionType.push(animated: true)
     ) {
         self.strings = strings
         self.colors = colors
         self.images = images
         self.fonts = fonts
         self.values = values
+        self.transition = transition
     }
 }
 
@@ -214,4 +217,11 @@ public extension CropVideoConfigs {
         }
     }
 
+}
+
+public extension CropVideoConfigs {
+    enum TransitionType {
+        case push(animated: Bool)
+        case present(animated: Bool)
+    }
 }

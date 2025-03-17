@@ -1,5 +1,5 @@
 PODS:
-  - CropVideo (1.0.0):
+  - CropVideo (1.0.1):
     - ffmpeg-kit-ios-full
     - MiTuKit
   - ffmpeg-kit-ios-full (6.0)
@@ -18,7 +18,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  CropVideo: 4107a4a057544b273661e871dd6c28037524d7ac
+  CropVideo: 99050de5ca74a49dc987e3bac1e2e95a0bbcfde8
   ffmpeg-kit-ios-full: 34de6ec504f88a7289fe223c2db93afc2c9f931a
   MiTuKit: 4616930df568385534245eb22d550c94c6fcd4ab
 

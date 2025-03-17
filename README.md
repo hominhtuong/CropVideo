@@ -50,6 +50,7 @@ extension ViewController {
         var editorConfigs = CropVideoConfigs()
         editorConfigs.strings.title = "Video Editor"
         editorConfigs.fonts.titleFont = .boldSystemFont(ofSize: 20)
+        editorConfigs.transition = .push(animated: true)
         //...
         
         UIButton() >>> view >>> {
@@ -62,7 +63,8 @@ extension ViewController {
             $0.setTitleColor(.white, for: .normal)
             $0.backgroundColor = .red
             $0.handle {
-                guard let url = Bundle.main.url(forResource: "SampleVideo", withExtension: "mp4") else {return}
+                guard let url = Bundle.main.url(forResource: "SampleVideo", withExtension: "mp4")
+                else { return }
                 let editorVC = CropVideoViewController(url: url)
                 editorVC.delegate = self
                 editorVC.configs = editorConfigs
@@ -82,12 +84,16 @@ extension ViewController: CropVideoDelegate {
         printDebug("video editor did tap back")
     }
     
+    func didRevertVideo() {
+        printDebug("video editor did tap revert")
+    }
+    
     func didCropVideo(cropUrl: URL, originalUrl: URL) {
-        printDebug("crop originalUrl: \(originalUrl), croped url: \(cropUrl)")
+        printDebug("crop: originalUrl: \(originalUrl), croped url: \(cropUrl)")
     }
     
     func didTrimVideo(trimUrl: URL, originalUrl: URL) {
-        printDebug("trim originalUrl: \(originalUrl), trimed url: \(trimUrl)")
+        printDebug("trim: originalUrl: \(originalUrl), trimed url: \(trimUrl)")
     }
 }
 
