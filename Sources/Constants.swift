@@ -22,6 +22,8 @@ public struct CropVideoConfigs {
     public struct Strings {
         public var cancel: String
         public var done: String
+        public var crop: String
+        public var trim: String
         public var revert: String
         public var title: String
         public var saved: String
@@ -35,6 +37,8 @@ public struct CropVideoConfigs {
         public init(
             cancel: String = "Cancel",
             done: String = "Done",
+            crop: String = "Crop",
+            trim: String = "Trim",
             revert: String = "Revert",
             title: String = "Editor",
             saved: String = "Saved",
@@ -47,6 +51,8 @@ public struct CropVideoConfigs {
         ) {
             self.cancel = cancel
             self.done = done
+            self.crop = crop
+            self.trim = trim
             self.revert = revert
             self.title = title
             self.saved = saved
@@ -62,33 +68,32 @@ public struct CropVideoConfigs {
     // MARK: - Colors
     public struct Colors {
         public var backgroundColor: UIColor
+        public var cropBorderColor: UIColor
+        public var cropDotColor: UIColor
         public var loadingColor: UIColor
         public var bgPlayerView: UIColor
         public var bgHeaderColor: UIColor
         public var bgBottomColor: UIColor
         public var handleColor: UIColor
         public var mainColor: UIColor
-        public var white: UIColor
-        public var black: UIColor
-        public var blackWithAlpha: UIColor
         public var nativationTintColor: UIColor
         public var titleColor: UIColor
-        
 
         public init(
             backgroundColor: UIColor = UIColor.from("36374b"),
+            cropBorderColor: UIColor = UIColor.white,
+            cropDotColor: UIColor = UIColor.white,
             bgHeaderColor: UIColor = UIColor.from("36374b"),
             bgBottomColor: UIColor = UIColor.from("36374b"),
             bgPlayerView: UIColor = UIColor.from("000000"),
             primaryColor: UIColor = UIColor.from("1a182d"),
             handleColor: UIColor = UIColor.white,
             mainColor: UIColor = UIColor.from("ffc81c"),
-            white: UIColor = UIColor.white,
-            black: UIColor = UIColor.black,
-            blackWithAlpha: UIColor = UIColor.black.withAlphaComponent(0.6),
             nativationTintColor: UIColor = UIColor.white,
             titleColor: UIColor = UIColor.white
         ) {
+            self.cropDotColor = cropDotColor
+            self.cropBorderColor = cropBorderColor
             self.bgHeaderColor = bgHeaderColor
             self.backgroundColor = backgroundColor
             self.loadingColor = primaryColor
@@ -96,9 +101,6 @@ public struct CropVideoConfigs {
             self.bgBottomColor = bgBottomColor
             self.handleColor = handleColor
             self.mainColor = mainColor
-            self.white = white
-            self.black = black
-            self.blackWithAlpha = blackWithAlpha
             self.nativationTintColor = nativationTintColor
             self.titleColor = titleColor
         }
@@ -117,7 +119,7 @@ public struct CropVideoConfigs {
         public init(
             backButton: UIImage? = UIImage(
                 systemName: "chevron.backward",
-                withConfiguration: ButtonImageConfigs.defaultImageConfig)?
+                withConfiguration: ButtonImageConfigs.smallImageConfig)?
                 .withTintColor(.white, renderingMode: .alwaysOriginal),
             cropIcon: UIImage? = UIImage(
                 systemName: "crop",
@@ -153,30 +155,33 @@ public struct CropVideoConfigs {
             self.nextIcon = nextIcon
         }
     }
-    
+
     // MARK: - Fonts
     public struct Fonts {
         public var titleFont: UIFont
         public var buttonFont: UIFont
-        
+
         public init(
             titleFont: UIFont = UIFont.boldSystemFont(ofSize: 20),
             buttonFont: UIFont = UIFont.boldSystemFont(ofSize: 15)
-        
+
         ) {
             self.titleFont = titleFont
             self.buttonFont = buttonFont
         }
     }
-    
+
     // MARK: - Values
     public struct Values {
         public var minDuration: TimeInterval
-        
+        public var showAlertWhenCompleted: Bool
+
         public init(
-            minDuration: TimeInterval = 2
+            minDuration: TimeInterval = 2,
+            showAlert: Bool = true
         ) {
             self.minDuration = minDuration
+            self.showAlertWhenCompleted = showAlert
         }
     }
 
@@ -239,10 +244,7 @@ public let customConfigs = CropVideoConfigs(
         bgBottomColor: .blue,
         primaryColor: .red,
         handleColor: .white,
-        mainColor: .yellow,
-        white: .white,
-        black: .black,
-        blackWithAlpha: UIColor.black.withAlphaComponent(0.6)
+        mainColor: .yellow
     ),
     images: CropVideoConfigs.Images(
         backButton: UIImage(named: "custom_back_icon"),

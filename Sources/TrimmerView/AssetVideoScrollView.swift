@@ -33,7 +33,7 @@ public class AssetVideoScrollView: UIScrollView {
 
         contentView >>> self >>> {
             $0.snp.makeConstraints {
-                $0.leading.top.bottom.equalToSuperview()
+                $0.edges.equalToSuperview()
                 $0.width.equalToSuperview().multipliedBy(1)
             }
             $0.tag = -1
@@ -78,14 +78,18 @@ public class AssetVideoScrollView: UIScrollView {
     }
 
     private func setContentSize(for asset: AVAsset) async -> CGSize {
+        
         do {
             let duration = try await asset.load(.duration)
             let contentWidthFactor = CGFloat(max(1, duration.seconds / maxDuration))
             
-            self.contentView.snp.updateConstraints {
+            self.contentView.snp.remakeConstraints {
+                $0.edges.equalToSuperview()
                 $0.width.equalToSuperview().multipliedBy(contentWidthFactor)
             }
-            
+            self.setNeedsLayout()
+            self.layoutIfNeeded()
+
             return contentView.bounds.size
         } catch {
             print("Error loading asset duration: \(error.localizedDescription)")

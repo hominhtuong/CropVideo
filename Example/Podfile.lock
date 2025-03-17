@@ -1,20 +1,27 @@
 PODS:
+  - CropVideo (1.0.0):
+    - ffmpeg-kit-ios-full
+    - MiTuKit
   - ffmpeg-kit-ios-full (6.0)
   - MiTuKit (1.0.0)
 
 DEPENDENCIES:
-  - ffmpeg-kit-ios-full (~> 6.0)
-  - MiTuKit
+  - CropVideo (from `../`)
 
 SPEC REPOS:
   trunk:
     - ffmpeg-kit-ios-full
     - MiTuKit
 
+EXTERNAL SOURCES:
+  CropVideo:
+    :path: "../"
+
 SPEC CHECKSUMS:
+  CropVideo: 4107a4a057544b273661e871dd6c28037524d7ac
   ffmpeg-kit-ios-full: 34de6ec504f88a7289fe223c2db93afc2c9f931a
   MiTuKit: 4616930df568385534245eb22d550c94c6fcd4ab
 
-PODFILE CHECKSUM: 79853b4bb9f2b0a3d9794065f38b3e4aea3c4449
+PODFILE CHECKSUM: 3f3bbb140830bc0ada4e3a5b54b214d2c588c4bc
 
 COCOAPODS: 1.16.2

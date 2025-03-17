@@ -75,7 +75,7 @@ public class CropVideoViewController: UIViewController {
     private let bottomDotView = UIView()
     private let leftDotView = UIView()
     private let rightDotView = UIView()
-    
+
     private var hasSetupConsstraints: Bool = false
 
     private var isCroping: Bool = false {
@@ -84,20 +84,37 @@ public class CropVideoViewController: UIViewController {
             self.backButton.isHidden = isCroping
             self.cropContainerView.isHidden = !isCroping
 
+            let doneTitle =
+                isCroping ? configs.strings.crop : configs.strings.done
+            self.doneButton.setTitle(doneTitle, for: .normal)
+
+            let buttonFont = configs.fonts.buttonFont
+            let doneWidth = configs.strings.trim.width(
+                height: 32, font: buttonFont)
+
+            self.doneButton.snp.updateConstraints {
+                $0.width.equalTo(doneWidth + 10)
+            }
+
             if isCroping {
                 self.revertButton.disable()
-                self.doneButton.enable()
                 self.cropButton.disable()
                 self.trimmerButton.disable()
+                self.doneButton.enable()
             } else {
-                self.doneButton.disable()
+
                 self.cropButton.enable()
                 self.trimmerButton.enable()
 
                 if url != originalUrl {
                     self.revertButton.enable()
+                    self.doneButton.enable()
+                } else {
+                    self.doneButton.disable()
                 }
             }
+
+            self.view.layoutIfNeeded()
         }
     }
 
@@ -107,24 +124,42 @@ public class CropVideoViewController: UIViewController {
             self.backButton.isHidden = isTrimming
             self.trimmerView.isHidden = !isTrimming
 
+            let doneTitle =
+                isTrimming ? configs.strings.trim : configs.strings.done
+            self.doneButton.setTitle(doneTitle, for: .normal)
+
+            let buttonFont = configs.fonts.buttonFont
+            let doneWidth = configs.strings.trim.width(
+                height: 32, font: buttonFont)
+
+            self.doneButton.snp.updateConstraints {
+                $0.width.equalTo(doneWidth + 10)
+            }
+
             if isTrimming {
                 self.revertButton.disable()
                 self.doneButton.enable()
                 self.cropButton.disable()
                 self.trimmerButton.disable()
             } else {
-                self.doneButton.disable()
                 self.cropButton.enable()
                 self.trimmerButton.enable()
 
                 if url != originalUrl {
                     self.revertButton.enable()
+                    self.doneButton.enable()
+                } else {
+                    self.doneButton.disable()
                 }
             }
+            self.view.layoutIfNeeded()
         }
     }
+}
 
-    override public func viewDidLoad() {
+//MARK: Lifecycle
+extension CropVideoViewController {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
     }
@@ -147,11 +182,57 @@ public class CropVideoViewController: UIViewController {
         self.trimmerView.asset = originalAsset
     }
 
-    override public func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.stop()
     }
+}
 
+//MARK: Public Functions
+extension CropVideoViewController {
+    public func deleteCaches(_ completion: ((Error?) -> Void)? = nil) {
+        FileHelper.shared.deleteCaches(completion)
+    }
+
+    public func play() {
+        NotificationCenter.default.removeObserver(
+            self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(playerDidFinishPlaying),
+            name: .AVPlayerItemDidPlayToEndTime,
+            object: self.player?.currentItem
+        )
+
+        player.play()
+        autoHideActionView()
+
+        self.playButton.isHidden = true
+        self.pauseButton.isHidden = false
+    }
+
+    public func pause() {
+        NotificationCenter.default.removeObserver(
+            self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
+
+        player.pause()
+        hideActionTimer?.invalidate()
+        self.playButton.isHidden = false
+        self.pauseButton.isHidden = true
+    }
+
+    public func stop() {
+        NotificationCenter.default.removeObserver(
+            self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
+        player.pause()
+        player.seek(to: .zero)
+    }
+
+}
+
+//MARK: - Private function
+extension CropVideoViewController {
     private func setupPlayer() {
         if let player = self.player {
             player.pause()
@@ -183,7 +264,7 @@ public class CropVideoViewController: UIViewController {
     private func setupView() {
         view.backgroundColor = configs.colors.backgroundColor
         let buttonFont = configs.fonts.buttonFont
-        
+
         headerView >>> view >>> {
             $0.snp.makeConstraints {
                 $0.top.leading.trailing.equalToSuperview()
@@ -200,11 +281,13 @@ public class CropVideoViewController: UIViewController {
             }
             $0.setImage(configs.images.backButton, for: .normal)
             $0.handle {
+                self.delegate?.didTapBack()
                 self.navigationController?.popViewController(animated: true)
             }
         }
 
-        let cancelWidth = configs.strings.done.width(height: 32, font: buttonFont)
+        let cancelWidth = configs.strings.cancel.width(
+            height: 32, font: buttonFont)
         cancelButton >>> headerView >>> {
             $0.snp.makeConstraints {
                 $0.bottom.equalToSuperview().offset(-16)
@@ -229,7 +312,7 @@ public class CropVideoViewController: UIViewController {
         }
 
         let doneWidth = configs.strings.done.width(height: 32, font: buttonFont)
-        
+
         doneButton >>> headerView >>> {
             $0.snp.makeConstraints {
                 $0.centerY.equalTo(backButton)
@@ -244,14 +327,18 @@ public class CropVideoViewController: UIViewController {
             $0.handle {
                 if self.isCroping {
                     self.doneCroping()
-                }
-                if self.isTrimming {
+                } else if self.isTrimming {
                     self.doneTrimming()
+                } else {
+                    self.delegate?.didTapDone(editedUrl: self.url)
+                    self.navigationController?.popViewController(animated: true)
                 }
+
             }
         }
 
-        let resetWidth = configs.strings.revert.width(height: 32, font: buttonFont)
+        let resetWidth = configs.strings.revert.width(
+            height: 32, font: buttonFont)
         revertButton >>> headerView >>> {
             $0.snp.makeConstraints {
                 $0.centerY.equalTo(backButton)
@@ -269,6 +356,8 @@ public class CropVideoViewController: UIViewController {
                 self.trimmerView.asset = self.originalAsset
                 self.setupPlayer()
                 self.revertButton.disable()
+                self.doneButton.disable()
+                self.delegate?.didRevertVideo()
             }
         }
 
@@ -276,11 +365,15 @@ public class CropVideoViewController: UIViewController {
             $0.snp.makeConstraints {
                 $0.centerY.equalTo(backButton)
                 $0.centerX.equalToSuperview().priority(.low)
-                $0.leading.greaterThanOrEqualTo(backButton.snp.trailing).offset(8).priority(.high)
-                $0.trailing.lessThanOrEqualTo(revertButton.snp.leading).offset(-8).priority(.high)
+                $0.leading.greaterThanOrEqualTo(backButton.snp.trailing).offset(
+                    8
+                ).priority(.high)
+                $0.trailing.lessThanOrEqualTo(revertButton.snp.leading).offset(
+                    -8
+                ).priority(.high)
                 $0.height.equalTo(32)
             }
-            $0.font = .bold(20)
+            $0.font = configs.fonts.titleFont
             $0.textColor = configs.colors.titleColor
             $0.text = configs.strings.title
             $0.textAlignment = .center
@@ -454,7 +547,7 @@ public class CropVideoViewController: UIViewController {
                 width: maxWidth / 2,
                 height: maxWidth * 0.5)
             $0.backgroundColor = .clear
-            $0.layer.borderColor = UIColor.white.cgColor
+            $0.layer.borderColor = configs.colors.cropBorderColor.cgColor
             $0.layer.borderWidth = 2
         }
 
@@ -465,7 +558,7 @@ public class CropVideoViewController: UIViewController {
                 $0.width.height.equalTo(12)
             }
             $0.layer.cornerRadius = 6
-            $0.backgroundColor = .white
+            $0.backgroundColor = configs.colors.cropDotColor
         }
 
         bottomDotView >>> cropContainerView >>> {
@@ -475,7 +568,7 @@ public class CropVideoViewController: UIViewController {
                 $0.width.height.equalTo(12)
             }
             $0.layer.cornerRadius = 6
-            $0.backgroundColor = .white
+            $0.backgroundColor = configs.colors.cropDotColor
         }
 
         leftDotView >>> cropContainerView >>> {
@@ -485,7 +578,7 @@ public class CropVideoViewController: UIViewController {
                 $0.width.height.equalTo(12)
             }
             $0.layer.cornerRadius = 6
-            $0.backgroundColor = .white
+            $0.backgroundColor = configs.colors.cropDotColor
         }
 
         rightDotView >>> cropContainerView >>> {
@@ -495,9 +588,9 @@ public class CropVideoViewController: UIViewController {
                 $0.width.height.equalTo(12)
             }
             $0.layer.cornerRadius = 6
-            $0.backgroundColor = .white
+            $0.backgroundColor = configs.colors.cropDotColor
         }
-        
+
         hasSetupConsstraints = true
         setupGestures()
     }
@@ -521,7 +614,11 @@ public class CropVideoViewController: UIViewController {
     private func doneCroping() {
         self.showLoading(
             color: .white, containerColor: configs.colors.loadingColor)
-        guard let outputUrl = FileHelper.shared.createFile(fileName: "crop_\(Date().timeIntervalSince1970)", fileExtension: "mp4") else {
+        guard
+            let outputUrl = FileHelper.shared.createFile(
+                fileName: "crop_\(Date().timeIntervalSince1970)",
+                fileExtension: "mp4")
+        else {
             return
         }
         Task {
@@ -578,26 +675,28 @@ public class CropVideoViewController: UIViewController {
             Queue.main {
                 self.hideLoading()
                 if success {
-                    self.delegate?.didCropVideo(cropUrl: outputUrl, originalUrl: self.originalUrl)
+                    self.delegate?.didCropVideo(
+                        cropUrl: outputUrl, originalUrl: self.originalUrl)
                     self.url = outputUrl
                     self.avAsset = AVURLAsset(url: outputUrl)
                     self.trimmerView.asset = self.avAsset
                     self.setupPlayer()
                     self.revertButton.enable()
-                    
-                    self.showAlert(
-                        title: self.configs.strings.saved,
-                        message: self.configs.strings.cropVideoSuccess,
-                        actionTile: self.configs.strings.ok)
+
+                    if self.configs.values.showAlertWhenCompleted {
+                        self.showAlert(
+                            title: self.configs.strings.saved,
+                            message: self.configs.strings.cropVideoSuccess,
+                            actionTile: self.configs.strings.ok)
+                    }
                 } else {
-                    self.showAlert(
-                        title: self.configs.strings.failed,
-                        message: self.configs.strings.cropVideoFailed,
-                        actionTile: self.configs.strings.ok)
-                    
-//                    FileHelper.shared.deleteFile(with: self.url) { _ in
-//                        printDebug("remove crop file")
-//                    }
+                    if self.configs.values.showAlertWhenCompleted {
+                        self.showAlert(
+                            title: self.configs.strings.failed,
+                            message: self.configs.strings.cropVideoFailed,
+                            actionTile: self.configs.strings.ok)
+                    }
+
                 }
                 self.isCroping = false
             }
@@ -609,7 +708,7 @@ public class CropVideoViewController: UIViewController {
             guard let startTime = await self.trimmerView.getStartTime(),
                 let endTime = await self.trimmerView.getEndTime()
             else {
-                printDebug("trimmerView not init")
+                printDebug("TrimmerView not init")
                 self.isTrimming = false
                 return
             }
@@ -618,36 +717,45 @@ public class CropVideoViewController: UIViewController {
         }
     }
 
-    func trimVideo(startTime: CMTime, endTime: CMTime) {
+    private func trimVideo(startTime: CMTime, endTime: CMTime) {
         self.showLoading(
             color: .white, containerColor: configs.colors.loadingColor)
-        guard let outputUrl = FileHelper.shared.createFile(fileName: "trim_\(Date().timeIntervalSince1970)", fileExtension: "mp4") else {
+        guard
+            let outputUrl = FileHelper.shared.createFile(
+                fileName: "trim_\(Date().timeIntervalSince1970)",
+                fileExtension: "mp4")
+        else {
             return
         }
-        
+
         Task {
-            let success = await FileHelper.shared.trimVideo(inputPath: self.url, outputPath: outputUrl, startTime: startTime, endTime: endTime)
+            let success = await FileHelper.shared.trimVideo(
+                inputPath: self.url, outputPath: outputUrl,
+                startTime: startTime, endTime: endTime)
             self.hideLoading()
             if success {
-                self.delegate?.didTrimVideo(trimUrl: outputUrl, originalUrl: self.originalUrl)
+                self.delegate?.didTrimVideo(
+                    trimUrl: outputUrl, originalUrl: self.originalUrl)
                 self.url = outputUrl
                 self.avAsset = AVURLAsset(url: outputUrl)
                 self.trimmerView.asset = self.avAsset
                 self.setupPlayer()
                 self.revertButton.enable()
-                self.showAlert(
-                    title: self.configs.strings.saved,
-                    message: self.configs.strings.trimVideoSuccess,
-                    actionTile: self.configs.strings.ok)
+
+                if self.configs.values.showAlertWhenCompleted {
+                    self.showAlert(
+                        title: self.configs.strings.saved,
+                        message: self.configs.strings.trimVideoSuccess,
+                        actionTile: self.configs.strings.ok)
+                }
+
             } else {
-                self.showAlert(
-                    title: self.configs.strings.failed,
-                    message: self.configs.strings.trimVideoFailed,
-                    actionTile: self.configs.strings.ok)
-                
-//                    FileHelper.shared.deleteFile(with: self.url) { _ in
-//                        printDebug("remove crop file")
-//                    }
+                if self.configs.values.showAlertWhenCompleted {
+                    self.showAlert(
+                        title: self.configs.strings.failed,
+                        message: self.configs.strings.trimVideoFailed,
+                        actionTile: self.configs.strings.ok)
+                }
             }
             self.isTrimming = false
         }
@@ -672,7 +780,131 @@ public class CropVideoViewController: UIViewController {
             cropContainerView.bringSubviewToFront(bottomDotView)
         }
     }
-    
+
+    private func getOriginalVideoSize() async -> CGSize {
+        let asset = self.avAsset ?? AVURLAsset(url: self.url)
+
+        do {
+            // Load video tracks asynchronously
+            let tracks = try await asset.loadTracks(withMediaType: .video)
+            guard let track = tracks.first else {
+                print("No video track found")
+                return .zero
+            }
+
+            // Load preferredTransform and naturalSize asynchronously
+            let preferredTransform = try await track.load(.preferredTransform)
+            let naturalSize = try await track.load(.naturalSize)
+
+            // Apply the preferredTransform to a rectangle and get the transformed size
+            let transformedRect = CGRect(origin: .zero, size: naturalSize)
+                .applying(preferredTransform)
+            let transformedSize = transformedRect.size
+
+            // Return the absolute size
+            return CGSize(
+                width: abs(transformedSize.width),
+                height: abs(transformedSize.height))
+        } catch {
+            print(
+                "Error loading video properties: \(error.localizedDescription)")
+            return .zero
+        }
+    }
+
+    private func autoHideActionView() {
+        self.hideActionTimer?.invalidate()
+
+        if self.actionContainerView.isHidden {
+            self.actionContainerView.alpha = 1
+            self.actionContainerView.isHidden = false
+
+            self.autoHideActionView()
+        } else {
+            self.hideActionTimer = Timer.scheduledTimer(
+                withTimeInterval: 5, repeats: false,
+                block: { _ in
+                    UIView.animate(
+                        withDuration: 1,
+                        animations: {
+                            self.actionContainerView.alpha = 0
+                        },
+                        completion: { _ in
+                            self.actionContainerView.isHidden = true
+                        })
+                })
+        }
+
+    }
+
+    private func updateUI() {
+        // Cập nhật strings
+        cancelButton.setTitle(configs.strings.cancel, for: .normal)
+        doneButton.setTitle(configs.strings.done, for: .normal)
+        revertButton.setTitle(configs.strings.revert, for: .normal)
+        titleLabel.text = configs.strings.title
+
+        // Cập nhật colors
+        view.backgroundColor = configs.colors.backgroundColor
+        headerView.backgroundColor = configs.colors.loadingColor
+        cropAreaView.layer.borderColor = configs.colors.cropBorderColor.cgColor
+        trimmerView.handleColor = configs.colors.handleColor
+        trimmerView.mainColor = configs.colors.mainColor
+        topDotView.backgroundColor = configs.colors.cropDotColor
+        bottomDotView.backgroundColor = configs.colors.cropDotColor
+        leftDotView.backgroundColor = configs.colors.cropDotColor
+        rightDotView.backgroundColor = configs.colors.cropDotColor
+
+        titleLabel.textColor = configs.colors.titleColor
+        doneButton.setTitleColor(
+            configs.colors.nativationTintColor, for: .normal)
+        revertButton.setTitleColor(
+            configs.colors.nativationTintColor, for: .normal)
+        cancelButton.setTitleColor(
+            configs.colors.nativationTintColor, for: .normal)
+
+        // Cập nhật images
+        backButton.setImage(configs.images.backButton, for: .normal)
+        cropButton.setImage(configs.images.cropIcon, for: .normal)
+        trimmerButton.setImage(configs.images.trimmerIcon, for: .normal)
+        playButton.setImage(configs.images.playIcon, for: .normal)
+        pauseButton.setImage(configs.images.pauseIcon, for: .normal)
+        previousButton.setImage(configs.images.previousIcon, for: .normal)
+        nextButton.setImage(configs.images.nextIcon, for: .normal)
+
+        // Cập nhật font
+        titleLabel.font = configs.fonts.titleFont
+
+        let buttonFont = configs.fonts.buttonFont
+        cancelButton.titleLabel?.font = buttonFont
+        doneButton.titleLabel?.font = buttonFont
+        revertButton.titleLabel?.font = buttonFont
+
+        guard hasSetupConsstraints else { return }
+
+        let resetWidth = configs.strings.revert.width(
+            height: 32, font: buttonFont)
+        let doneWidth = configs.strings.done.width(height: 32, font: buttonFont)
+        let cancelWidth = configs.strings.cancel.width(
+            height: 32, font: buttonFont)
+
+        self.doneButton.snp.updateConstraints {
+            $0.width.equalTo(doneWidth + 10)
+        }
+
+        self.revertButton.snp.updateConstraints {
+            $0.width.equalTo(resetWidth + 10)
+        }
+
+        self.cancelButton.snp.updateConstraints {
+            $0.width.equalTo(cancelWidth + 10)
+        }
+        self.view.layoutIfNeeded()
+    }
+}
+
+//MARK: - @objc Functions
+extension CropVideoViewController {
     @objc private func playerDidFinishPlaying(_ notification: Notification) {
         self.player?.seek(to: .zero)
         self.player?.play()
@@ -757,121 +989,36 @@ public class CropVideoViewController: UIViewController {
         updateMask()
     }
 
-    private func getOriginalVideoSize() async -> CGSize {
-        let asset = self.avAsset ?? AVURLAsset(url: self.url)
-
-        do {
-            // Load video tracks asynchronously
-            let tracks = try await asset.loadTracks(withMediaType: .video)
-            guard let track = tracks.first else {
-                print("No video track found")
-                return .zero
+    @objc func onPlaybackTimeChecker() {
+        Task {
+            guard let startTime = await trimmerView.getStartTime(),
+                let endTime = await trimmerView.getEndTime(),
+                let player = player
+            else {
+                return
             }
 
-            // Load preferredTransform and naturalSize asynchronously
-            let preferredTransform = try await track.load(.preferredTransform)
-            let naturalSize = try await track.load(.naturalSize)
+            let playBackTime = player.currentTime()
+            trimmerView.seek(to: playBackTime)
 
-            // Apply the preferredTransform to a rectangle and get the transformed size
-            let transformedRect = CGRect(origin: .zero, size: naturalSize)
-                .applying(preferredTransform)
-            let transformedSize = transformedRect.size
-
-            // Return the absolute size
-            return CGSize(
-                width: abs(transformedSize.width),
-                height: abs(transformedSize.height))
-        } catch {
-            print(
-                "Error loading video properties: \(error.localizedDescription)")
-            return .zero
+            if playBackTime >= endTime {
+                await player.seek(
+                    to: startTime, toleranceBefore: CMTime.zero,
+                    toleranceAfter: CMTime.zero)
+                trimmerView.seek(to: startTime)
+            }
         }
     }
-    
-    private func updateUI() {
-        // Cập nhật strings
-        cancelButton.setTitle(configs.strings.cancel, for: .normal)
-        doneButton.setTitle(configs.strings.done, for: .normal)
-        revertButton.setTitle(configs.strings.revert, for: .normal)
-        titleLabel.text = configs.strings.title
 
-        // Cập nhật colors
-        view.backgroundColor = configs.colors.bgBottomColor
-        headerView.backgroundColor = configs.colors.loadingColor
-        cropAreaView.layer.borderColor = configs.colors.white.cgColor
-        trimmerView.handleColor = configs.colors.handleColor
-        trimmerView.mainColor = configs.colors.mainColor
-        
-        titleLabel.textColor = configs.colors.titleColor
-        doneButton.setTitleColor(configs.colors.nativationTintColor, for: .normal)
-        revertButton.setTitleColor(configs.colors.nativationTintColor, for: .normal)
-        cancelButton.setTitleColor(configs.colors.nativationTintColor, for: .normal)
-
-        // Cập nhật images
-        backButton.setImage(configs.images.backButton, for: .normal)
-        cropButton.setImage(configs.images.cropIcon, for: .normal)
-        trimmerButton.setImage(configs.images.trimmerIcon, for: .normal)
-        playButton.setImage(configs.images.playIcon, for: .normal)
-        pauseButton.setImage(configs.images.pauseIcon, for: .normal)
-        previousButton.setImage(configs.images.previousIcon, for: .normal)
-        nextButton.setImage(configs.images.nextIcon, for: .normal)
-        
-        guard hasSetupConsstraints else {return}
-        
-        let buttonFont = configs.fonts.buttonFont
-        let resetWidth = configs.strings.revert.width(height: 32, font: buttonFont)
-        let doneWidth = configs.strings.done.width(height: 32, font: buttonFont)
-        let cancelWidth = configs.strings.cancel.width(height: 32, font: buttonFont)
-        
-        self.doneButton.snp.updateConstraints {
-            $0.width.equalTo(doneWidth + 10)
+    @objc func itemDidFinishPlaying(_ notification: Notification) {
+        Task {
+            if let startTime = await trimmerView.getStartTime() {
+                await player?.seek(to: startTime)
+                if player?.isPlaying != true {
+                    player?.play()
+                }
+            }
         }
-        
-        self.revertButton.snp.updateConstraints {
-            $0.width.equalTo(resetWidth + 10)
-        }
-        
-        self.cancelButton.snp.updateConstraints {
-            $0.width.equalTo(cancelWidth + 10)
-        }
-        self.view.layoutIfNeeded()
-    }
-
-}
-
-//MARK: Public Functions
-extension CropVideoViewController {
-    public func play() {
-        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
-        
-        NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(playerDidFinishPlaying),
-                name: .AVPlayerItemDidPlayToEndTime,
-                object: self.player?.currentItem
-            )
-        
-        
-        player.play()
-        autoHideActionView()
-
-        self.playButton.isHidden = true
-        self.pauseButton.isHidden = false
-    }
-
-    public func pause() {
-        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
-        
-        player.pause()
-        hideActionTimer?.invalidate()
-        self.playButton.isHidden = false
-        self.pauseButton.isHidden = true
-    }
-
-    public func stop() {
-        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
-        player.pause()
-        player.seek(to: .zero)
     }
 
 }
@@ -894,18 +1041,7 @@ extension CropVideoViewController: TrimmerViewDelegate {
         play()
     }
 
-    @objc func itemDidFinishPlaying(_ notification: Notification) {
-        Task {
-            if let startTime = await trimmerView.getStartTime() {
-                await player?.seek(to: startTime)
-                if player?.isPlaying != true {
-                    player?.play()
-                }
-            }
-        }
-    }
-
-    func startPlaybackTimeChecker() {
+    private func startPlaybackTimeChecker() {
         stopPlaybackTimeChecker()
         playbackTimeCheckerTimer = Timer.scheduledTimer(
             timeInterval: 0.1, target: self,
@@ -913,55 +1049,8 @@ extension CropVideoViewController: TrimmerViewDelegate {
                 #selector(onPlaybackTimeChecker), userInfo: nil, repeats: true)
     }
 
-    func stopPlaybackTimeChecker() {
+    private func stopPlaybackTimeChecker() {
         playbackTimeCheckerTimer?.invalidate()
         playbackTimeCheckerTimer = nil
     }
-
-    @objc func onPlaybackTimeChecker() {
-        Task {
-            guard let startTime = await trimmerView.getStartTime(),
-                let endTime = await trimmerView.getEndTime(),
-                let player = player
-            else {
-                return
-            }
-
-            let playBackTime = player.currentTime()
-            trimmerView.seek(to: playBackTime)
-
-            if playBackTime >= endTime {
-                await player.seek(
-                    to: startTime, toleranceBefore: CMTime.zero,
-                    toleranceAfter: CMTime.zero)
-                trimmerView.seek(to: startTime)
-            }
-        }
-    }
-
-    private func autoHideActionView() {
-        self.hideActionTimer?.invalidate()
-
-        if self.actionContainerView.isHidden {
-            self.actionContainerView.alpha = 1
-            self.actionContainerView.isHidden = false
-
-            self.autoHideActionView()
-        } else {
-            self.hideActionTimer = Timer.scheduledTimer(
-                withTimeInterval: 5, repeats: false,
-                block: { _ in
-                    UIView.animate(
-                        withDuration: 1,
-                        animations: {
-                            self.actionContainerView.alpha = 0
-                        },
-                        completion: { _ in
-                            self.actionContainerView.isHidden = true
-                        })
-                })
-        }
-
-    }
-
 }

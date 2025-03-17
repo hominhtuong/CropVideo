@@ -2,6 +2,6 @@
 target 'Example' do
   use_frameworks!
 
-   #pod 'CropVideo', :path => '../'
+   pod 'CropVideo', :path => '../'
 
 end

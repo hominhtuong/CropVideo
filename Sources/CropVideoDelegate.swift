@@ -10,9 +10,15 @@ import MiTuKit
 public protocol CropVideoDelegate {
     func didCropVideo(cropUrl: URL, originalUrl: URL)
     func didTrimVideo(trimUrl: URL, originalUrl: URL)
+    func didRevertVideo()
+    func didTapDone(editedUrl: URL)
+    func didTapBack()
 }
 
 public extension CropVideoDelegate {
     func didCropVideo(cropUrl: URL, originalUrl: URL) {}
     func didTrimVideo(trimUrl: URL, originalUrl: URL) {}
+    func didRevertVideo() {}
+    func didTapDone(editedUrl: URL) {}
+    func didTapBack() {}
 }
