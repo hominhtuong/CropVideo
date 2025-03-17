@@ -15,11 +15,11 @@ Pod::Spec.new do |spec|
     Designed for iOS, this library provides a highly customizable UI, enabling developers to modify buttons, images, and text effortlessly to match their application's look and feel. 🚀
     DESC
 
-    spec.homepage     = "https://mituultra.com/"
+    spec.homepage     = "https://github.com/hominhtuong/CropVideo"
     spec.license      = { :type => "MIT", :file => "LICENSE" }
     spec.author       = { "Mitu Ultra" => "support@mituultra.com" }
-    spec.platform     = :ios, "14.0"
-    spec.ios.deployment_target = '14.0'
+    spec.platform     = :ios, "15.0"
+    spec.ios.deployment_target = '15.0'
 
     spec.source       = { :git => "https://github.com/hominhtuong/CropVideo.git", :tag => "#{spec.version}" }
     spec.source_files = 'Sources/**/*.swift'
