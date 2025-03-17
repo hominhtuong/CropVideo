@@ -22,7 +22,7 @@ Pod::Spec.new do |spec|
     spec.ios.deployment_target = '14.0'
 
     spec.source       = { :git => "https://github.com/hominhtuong/CropVideo.git", :tag => "#{spec.version}" }
-    spec.source_files = 'source/**/*.swift'
+    spec.source_files = 'Sources/**/*.swift'
 
     spec.dependency 'MiTuKit'
     spec.dependency 'ffmpeg-kit-ios-full'
