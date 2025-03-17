@@ -1,0 +1,7 @@
+
+target 'Example' do
+  use_frameworks!
+
+   #pod 'CropVideo', :path => '../'
+
+end

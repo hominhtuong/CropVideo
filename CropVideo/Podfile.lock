@@ -1,0 +1,20 @@
+PODS:
+  - ffmpeg-kit-ios-full (6.0)
+  - MiTuKit (1.0.0)
+
+DEPENDENCIES:
+  - ffmpeg-kit-ios-full (~> 6.0)
+  - MiTuKit
+
+SPEC REPOS:
+  trunk:
+    - ffmpeg-kit-ios-full
+    - MiTuKit
+
+SPEC CHECKSUMS:
+  ffmpeg-kit-ios-full: 34de6ec504f88a7289fe223c2db93afc2c9f931a
+  MiTuKit: 4616930df568385534245eb22d550c94c6fcd4ab
+
+PODFILE CHECKSUM: 79853b4bb9f2b0a3d9794065f38b3e4aea3c4449
+
+COCOAPODS: 1.16.2

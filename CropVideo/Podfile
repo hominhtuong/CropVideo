@@ -1,0 +1,7 @@
+target 'CropVideo' do
+  use_frameworks!
+
+pod 'MiTuKit'
+pod 'ffmpeg-kit-ios-full', '~> 6.0'
+
+end
