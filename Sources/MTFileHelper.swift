@@ -1,5 +1,5 @@
 //
-//  FileHelper.swift
+//  MTFileHelper.swift
 //  CropVideo
 //
 //  Created by Mitu Ultra on 16/3/25.
@@ -9,8 +9,8 @@ import AVFoundation
 import MiTuKit
 import ffmpegkit
 
-open class FileHelper: NSObject {
-    public static let shared = FileHelper()
+open class MTFileHelper: NSObject {
+    public static let shared = MTFileHelper()
 
     // Variables
     private let fileManager = FileManager.default
@@ -26,10 +26,10 @@ open class FileHelper: NSObject {
         return cachesDirectory
     }
 
-    private let tempFolerName = "CropVideo"
+    private let defaultFolderName = "CropVideo"
 }
 
-extension FileHelper {
+extension MTFileHelper {
     public func deleteFile(with url: URL, completion: @escaping (Bool) -> Void)
     {
         do {
@@ -131,7 +131,7 @@ extension FileHelper {
     }
 }
 
-extension FileHelper {
+extension MTFileHelper {
     public func createFolder(in folder: String, childFolder: String = "")
         -> URL?
     {
@@ -158,8 +158,8 @@ extension FileHelper {
         in folder: String = "", fileName: String? = nil,
         fileExtension: String = "mp4"
     ) -> URL? {
-        let folderName = folder.isEmpty ? tempFolerName : folder
-        guard let folderURL = FileHelper.shared.createFolder(in: folderName)
+        let folderName = folder.isEmpty ? defaultFolderName : folder
+        guard let folderURL = MTFileHelper.shared.createFolder(in: folderName)
         else {
             printDebug("cannot create folder")
             return nil
@@ -203,7 +203,7 @@ extension FileHelper {
     }
 
     public func deleteCaches(_ completion: ((Error?) -> Void)? = nil) {
-        guard let folderURL = FileHelper.shared.createFolder(in: tempFolerName)
+        guard let folderURL = MTFileHelper.shared.createFolder(in: defaultFolderName)
         else {
             printDebug("Cannot find cache folder")
             completion?(nil)

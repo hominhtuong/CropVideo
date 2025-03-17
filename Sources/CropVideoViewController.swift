@@ -191,7 +191,7 @@ extension CropVideoViewController {
 //MARK: Public Functions
 extension CropVideoViewController {
     public func deleteCaches(_ completion: ((Error?) -> Void)? = nil) {
-        FileHelper.shared.deleteCaches(completion)
+        MTFileHelper.shared.deleteCaches(completion)
     }
 
     public func play() {
@@ -615,7 +615,7 @@ extension CropVideoViewController {
         self.showLoading(
             color: .white, containerColor: configs.colors.loadingColor)
         guard
-            let outputUrl = FileHelper.shared.createFile(
+            let outputUrl = MTFileHelper.shared.createFile(
                 fileName: "crop_\(Date().timeIntervalSince1970)",
                 fileExtension: "mp4")
         else {
@@ -668,7 +668,7 @@ extension CropVideoViewController {
             x: adjustedX, y: adjustedY, width: adjustedWidth,
             height: adjustedHeight)
 
-        FileHelper.shared.cropVideo(
+        MTFileHelper.shared.cropVideo(
             inputURL: self.url, outputURL: outputUrl,
             cropRect: cropRect
         ) { success in
@@ -721,7 +721,7 @@ extension CropVideoViewController {
         self.showLoading(
             color: .white, containerColor: configs.colors.loadingColor)
         guard
-            let outputUrl = FileHelper.shared.createFile(
+            let outputUrl = MTFileHelper.shared.createFile(
                 fileName: "trim_\(Date().timeIntervalSince1970)",
                 fileExtension: "mp4")
         else {
@@ -729,7 +729,7 @@ extension CropVideoViewController {
         }
 
         Task {
-            let success = await FileHelper.shared.trimVideo(
+            let success = await MTFileHelper.shared.trimVideo(
                 inputPath: self.url, outputPath: outputUrl,
                 startTime: startTime, endTime: endTime)
             self.hideLoading()

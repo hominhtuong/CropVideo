@@ -69,3 +69,55 @@ extension ViewController: CropVideoDelegate {
     }
 }
 
+
+/// Example of custom CropVideoConfigs
+///1.
+//public var viConfigs: CropVideoConfigs {
+//    var configs = CropVideoConfigs()
+//    configs.strings = CropVideoConfigs.Strings(
+//        cancel: "Hủy",
+//        done: "Xong",
+//        revert: "Khôi phục",
+//        title: "Chỉnh sửa",
+//        saved: "Đã lưu",
+//        cropVideoSuccess: "Cắt video thành công!",
+//        cropVideoFailed: "Cắt video thất bại!",
+//        trimVideoSuccess: "Cắt đoạn video thành công!",
+//        trimVideoFailed: "Cắt đoạn video thất bại!",
+//        failed: "Thất bại!",
+//        ok: "OK"
+//    )
+//    return configs
+//}
+//
+/////2
+//public let customConfigs = CropVideoConfigs(
+//    strings: CropVideoConfigs.Strings(
+//        cancel: "Hủy",
+//        done: "Xong",
+//        revert: "Khôi phục",
+//        title: "Chỉnh sửa",
+//        saved: "Đã lưu",
+//        cropVideoSuccess: "Cắt video thành công!",
+//        cropVideoFailed: "Cắt video thất bại!",
+//        trimVideoSuccess: "Cắt đoạn video thành công!",
+//        trimVideoFailed: "Cắt đoạn video thất bại!",
+//        failed: "Thất bại!",
+//        ok: "OK"
+//    ),
+//    colors: CropVideoConfigs.Colors(
+//        bgBottomColor: .blue,
+//        primaryColor: .red,
+//        handleColor: .white,
+//        mainColor: .yellow
+//    ),
+//    images: CropVideoConfigs.Images(
+//        backButton: UIImage(named: "custom_back_icon"),
+//        cropIcon: UIImage(systemName: "custom_crop_icon"),
+//        trimmerIcon: UIImage(systemName: "custom_trimmer_icon"),
+//        playIcon: UIImage(systemName: "custom_play_icon"),
+//        pauseIcon: UIImage(systemName: "custom_pause_icon"),
+//        previousIcon: UIImage(systemName: "custom_previous_icon"),
+//        nextIcon: UIImage(systemName: "custom_next_icon")
+//    )
+//)
