@@ -82,6 +82,7 @@ extension ViewController: CropVideoDelegate {
 
 
 ## License
-    CropVideo is released under the MIT license. See [LICENSE](https://github.com/hominhtuong/CropVideo/blob/main/LICENSE) for more details.  
+
+CropVideo is released under the MIT license. See [LICENSE](https://github.com/hominhtuong/CropVideo/blob/main/LICENSE) for more details.  
 <br>
 My website: [Visit](https://mituultra.com/)
