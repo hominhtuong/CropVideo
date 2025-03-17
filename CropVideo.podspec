@@ -21,7 +21,7 @@ Pod::Spec.new do |spec|
     spec.platform     = :ios, "14.0"
     spec.ios.deployment_target = '14.0'
 
-    spec.source       = { :git => "https://github.com/hominhtuong/ALMHelper.git", :tag => "#{spec.version}" }
+    spec.source       = { :git => "https://github.com/hominhtuong/CropVideo.git", :tag => "#{spec.version}" }
     spec.source_files = 'source/**/*.swift'
 
     spec.dependency 'MiTuKit'
