@@ -8,11 +8,11 @@ HI,
 CropVideo is a lightweight iOS library for cropping and trimming videos. It offers a flexible design, allowing full customization of buttons, images, and text to fit your app’s style.  
 Designed for iOS, this library provides a highly customizable UI, enabling developers to modify buttons, images, and text effortlessly to match their application's look and feel. 🚀  
 
-🔹 Key Features:
+🔹 Key Features:  
 ✅ Crop Video – Resize and crop videos to the desired frame.
 ✅ Trim Video – Cut and trim videos by selecting a specific time range.  
 
-## Video Editing Demo 🎬
+## Editing Demo 🎬
 
 <p align="center">
   <img src="Resources/trim.gif" width="39%">
@@ -21,7 +21,7 @@ Designed for iOS, this library provides a highly customizable UI, enabling devel
 
 
 ## Installation with CocoaPods
-To integrate ALMHelper into your Xcode project using CocoaPods, specify it in your `Podfile`
+To integrate CropVideo into your Xcode project using CocoaPods, specify it in your `Podfile`
 
 ```ruby
 target 'MyApp' do
@@ -42,7 +42,7 @@ dependencies: [
 ##### The code would look like this:
 
 ```swift
-import ALMHelper
+import CropVideo
 
 class ViewController: UIViewController {
     func setupView() {
