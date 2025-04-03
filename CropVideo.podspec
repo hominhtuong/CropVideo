@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name         = "CropVideo"
-    spec.version      = "1.0.2"
+    spec.version      = "1.0.3"
     spec.summary      = "🚀 CropVideo is a lightweight iOS library for cropping and trimming videos"
     spec.swift_versions = ['5.1', '5.2', '5.3', '5.4', '5.5', '5.6', '5.7', '5.8', '5.9']
     spec.pod_target_xcconfig = { 'SWIFT_OPTIMIZATION_LEVEL' => '-Onone' }
@@ -25,7 +25,7 @@ Pod::Spec.new do |spec|
     spec.source_files = 'Sources/**/*.swift'
 
     spec.dependency 'MiTuKit'
-    spec.dependency 'ffmpeg-kit-ios-full'
+    spec.dependency 'MituMedia'
     
 
 end

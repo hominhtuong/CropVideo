@@ -1,26 +1,27 @@
 PODS:
-  - CropVideo (1.0.1):
-    - ffmpeg-kit-ios-full
+  - CropVideo (1.0.3):
     - MiTuKit
-  - ffmpeg-kit-ios-full (6.0)
+    - MituMedia
   - MiTuKit (1.0.0)
+  - MituMedia (0.0.3):
+    - MiTuKit
 
 DEPENDENCIES:
   - CropVideo (from `../`)
 
 SPEC REPOS:
   trunk:
-    - ffmpeg-kit-ios-full
     - MiTuKit
+    - MituMedia
 
 EXTERNAL SOURCES:
   CropVideo:
     :path: "../"
 
 SPEC CHECKSUMS:
-  CropVideo: 99050de5ca74a49dc987e3bac1e2e95a0bbcfde8
-  ffmpeg-kit-ios-full: 34de6ec504f88a7289fe223c2db93afc2c9f931a
+  CropVideo: a8a78ac592ff3b1a686a4555e568113d44cd7a14
   MiTuKit: 4616930df568385534245eb22d550c94c6fcd4ab
+  MituMedia: ab0b9b5dfd64f7dfa7162f566c58603a5bfe6eda
 
 PODFILE CHECKSUM: 3f3bbb140830bc0ada4e3a5b54b214d2c588c4bc
 
