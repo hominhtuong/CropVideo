@@ -33,7 +33,7 @@ Once you have your Swift package set up, adding CropVideo as a dependency is as 
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/hominhtuong/CropVideo.git", .upToNextMajor(from: "1.0.4"))
+    .package(url: "https://github.com/hominhtuong/CropVideo.git", .upToNextMajor(from: "1.0.5"))
 ]
 ```
 
@@ -51,6 +51,17 @@ extension ViewController {
         editorConfigs.strings.title = "Video Editor"
         editorConfigs.fonts.titleFont = .boldSystemFont(ofSize: 20)
         editorConfigs.transition = .push(animated: true)
+        
+        var colors = editorConfigs.colors
+        colors.bgHeaderColor = .random
+        colors.bgBottomColor = .red
+        editorConfigs.colors = colors
+        
+        var paddings = editorConfigs.paddings
+        paddings.trimmerViewLeftPadding = 16
+        paddings.trimmerViewRightPadding = 16
+        editorConfigs.paddings = paddings
+        
         //...
         
         UIButton() >>> view >>> {

@@ -22,6 +22,7 @@ public struct CropVideoConfigs {
     public var images: Images
     public var fonts: Fonts
     public var values: Values
+    public var paddings: Paddings
     public var transition: TransitionType
 
     public init(
@@ -30,6 +31,7 @@ public struct CropVideoConfigs {
         images: Images = Images(),
         fonts: Fonts = Fonts(),
         values: Values = Values(),
+        padding: Paddings = Paddings(),
         transition: TransitionType = TransitionType.push(animated: true)
     ) {
         self.strings = strings
@@ -37,6 +39,7 @@ public struct CropVideoConfigs {
         self.images = images
         self.fonts = fonts
         self.values = values
+        self.paddings = padding
         self.transition = transition
     }
 }
@@ -214,6 +217,23 @@ public extension CropVideoConfigs {
         ) {
             self.minDuration = minDuration
             self.showAlertWhenCompleted = showAlert
+        }
+    }
+
+}
+
+public extension CropVideoConfigs {
+    // MARK: - Paddings
+    struct Paddings {
+        public var trimmerViewLeftPadding: CGFloat
+        public var trimmerViewRightPadding: CGFloat
+
+        public init(
+            trimmerViewLeftPadding: CGFloat = 16,
+            trimmerViewRightPadding: CGFloat = 16
+        ) {
+            self.trimmerViewLeftPadding = trimmerViewLeftPadding
+            self.trimmerViewRightPadding = trimmerViewRightPadding
         }
     }
 

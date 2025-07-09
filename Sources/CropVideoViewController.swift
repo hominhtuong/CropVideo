@@ -855,7 +855,9 @@ extension CropVideoViewController {
 
         // Cập nhật colors
         view.backgroundColor = configs.colors.backgroundColor
-        headerView.backgroundColor = configs.colors.loadingColor
+        headerView.backgroundColor = configs.colors.bgHeaderColor
+        bottomView.backgroundColor = configs.colors.bgBottomColor
+        
         cropAreaView.layer.borderColor = configs.colors.cropBorderColor.cgColor
         trimmerView.handleColor = configs.colors.handleColor
         trimmerView.mainColor = configs.colors.mainColor
@@ -863,6 +865,8 @@ extension CropVideoViewController {
         bottomDotView.backgroundColor = configs.colors.cropDotColor
         leftDotView.backgroundColor = configs.colors.cropDotColor
         rightDotView.backgroundColor = configs.colors.cropDotColor
+        
+        
 
         titleLabel.textColor = configs.colors.titleColor
         doneButton.setTitleColor(
@@ -908,6 +912,14 @@ extension CropVideoViewController {
         self.cancelButton.snp.updateConstraints {
             $0.width.equalTo(cancelWidth + 10)
         }
+        
+        let padding = configs.paddings
+        self.trimmerView.snp.updateConstraints {
+            $0.leading.equalToSuperview().offset(padding.trimmerViewLeftPadding)
+            $0.trailing.equalToSuperview().offset(-(padding.trimmerViewRightPadding))
+            $0.height.equalTo(50)
+        }
+        
         self.view.layoutIfNeeded()
     }
 }
