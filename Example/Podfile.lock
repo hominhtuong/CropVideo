@@ -2,7 +2,7 @@ PODS:
   - CropVideo (1.0.5):
     - MiTuKit
     - MTMedia
-  - MiTuKit (1.0.0)
+  - MiTuKit (1.0.1)
   - MTMedia (1.0.0):
     - MiTuKit
 
@@ -20,7 +20,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   CropVideo: 7e6d8e4d17006f740bc375446323a32822f40188
-  MiTuKit: 4616930df568385534245eb22d550c94c6fcd4ab
+  MiTuKit: d5eaf307d9bb8576af5febe62597f1eae7052971
   MTMedia: 1415f66ad7f21b42896cfe0bb7ecde25d9aa6d18
 
 PODFILE CHECKSUM: 3f3bbb140830bc0ada4e3a5b54b214d2c588c4bc

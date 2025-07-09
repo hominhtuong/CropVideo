@@ -23,6 +23,7 @@ public struct CropVideoConfigs {
     public var fonts: Fonts
     public var values: Values
     public var paddings: Paddings
+    public var sizeConfigs: SizeConfigs
     public var transition: TransitionType
 
     public init(
@@ -32,6 +33,7 @@ public struct CropVideoConfigs {
         fonts: Fonts = Fonts(),
         values: Values = Values(),
         padding: Paddings = Paddings(),
+        sizeConfigs: SizeConfigs = SizeConfigs(),
         transition: TransitionType = TransitionType.push(animated: true)
     ) {
         self.strings = strings
@@ -40,6 +42,7 @@ public struct CropVideoConfigs {
         self.fonts = fonts
         self.values = values
         self.paddings = padding
+        self.sizeConfigs = sizeConfigs
         self.transition = transition
     }
 }
@@ -234,6 +237,36 @@ public extension CropVideoConfigs {
         ) {
             self.trimmerViewLeftPadding = trimmerViewLeftPadding
             self.trimmerViewRightPadding = trimmerViewRightPadding
+        }
+    }
+
+}
+
+public extension CropVideoConfigs {
+    // MARK: - SizeConfigs
+    struct SizeConfigs {
+        public var dotSize: CGFloat
+        public var userTapMargin: CGFloat
+        public var cropAreaViewMinWidth: CGFloat?
+        public var cropAreaViewMinHeight: CGFloat?
+        public var cropViewDefaultWidth: CGFloat?
+        public var cropViewDefaultHeight: CGFloat?
+
+        public init(
+        dotSize: CGFloat = 12,
+        userTapMargin: CGFloat = 35,
+        cropAreaViewMinWidth: CGFloat? = nil,
+        cropAreaViewMinHeight: CGFloat? = nil,
+        cropViewDefaultWidth: CGFloat? = nil,
+        cropViewDefaultHeight: CGFloat? = nil
+
+        ) {
+            self.dotSize                = dotSize
+            self.userTapMargin          = userTapMargin
+            self.cropAreaViewMinWidth   = cropAreaViewMinWidth
+            self.cropAreaViewMinHeight  = cropAreaViewMinHeight
+            self.cropViewDefaultWidth   = cropViewDefaultWidth
+            self.cropViewDefaultHeight  = cropViewDefaultHeight
         }
     }
 

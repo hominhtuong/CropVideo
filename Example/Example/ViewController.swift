@@ -30,6 +30,13 @@ extension ViewController {
         editorConfigs.strings.title = "Video Editor"
         editorConfigs.fonts.titleFont = .boldSystemFont(ofSize: 20)
         editorConfigs.transition = .push(animated: true)
+        //editorConfigs.transition = .present(animated: true)
+        
+        var sizeConfigs = editorConfigs.sizeConfigs
+        sizeConfigs.dotSize = 16
+        sizeConfigs.cropViewDefaultWidth = maxWidth * 0.5
+        sizeConfigs.cropViewDefaultHeight = maxWidth * 0.5
+        editorConfigs.sizeConfigs = sizeConfigs
         
         var colors = editorConfigs.colors
         colors.bgHeaderColor = .random
@@ -41,7 +48,6 @@ extension ViewController {
         paddings.trimmerViewRightPadding = 16
         editorConfigs.paddings = paddings
         
-        //editorConfigs.transition = .present(animated: true)
         
         //...
         
